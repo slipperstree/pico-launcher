@@ -77,3 +77,24 @@ requires console confirmation. The previously working list layout is unchanged.
 
 Deployment remains a single replacement of TF root _picoboot.nds. The previous
 Chinese build is retained under ../rollback-chinese-v1/_picoboot.nds.
+
+## Filename caption correction (revision 3, 2026-11-23)
+
+User photos confirmed that revision 2 fixed Chinese grid abbreviations. The small
+filename caption below the selected game's icon still omitted Chinese characters
+(e.g. 逆转裁判2.nds appeared as 2.nds). This caption used the original Medium7_5
+font, which remained a compact Latin font in the initial integration.
+
+MaterialFileInfoCardView and CustomFileInfoView now select Regular10, backed by
+the shared Chinese font, for their filename captions. The existing 16-pixel line
+accommodates its 15-pixel line height. ROM banner titles, caption placement,
+UTF-8 text conversion and marquee scrolling are unchanged. The caption text is
+slightly larger; other compact UI text retains its original font.
+
+Validation: ARM9 rebuild/link and NDS CRC/glyph checks passed. Real glyph metrics
+for 逆转裁判2.nds, a Chinese folder name and an English filename fit the 16-pixel
+caption height. Console appearance still needs user confirmation. No new
+standalone test was added for the two font-selection substitutions.
+
+Deployment remains a single replacement of TF-card-root/_picoboot.nds. The
+previous revision is backed up in ../rollback-chinese-v2/_picoboot.nds.
