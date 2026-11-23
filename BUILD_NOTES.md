@@ -54,3 +54,26 @@ Deployment: use the packaged `_picoboot.nds` in the TF root. Existing
 also includes the previously SHA256-verified official DSPICO Loader v1.7.1.
 Keep the old `_picoboot.nds` to roll back.
 
+
+## Icon abbreviation correction (revision 2, 2026-11-23)
+
+The user's console photos confirmed that Chinese full names render correctly in
+both the top-screen detail card and the bottom-screen banner list. Material grid
+icons still displayed corrupted characters because MaterialFileIcon copied the
+first three UTF-8 bytes directly into char16_t storage.
+
+The icon constructor now uses the same StringUtil UTF-8 decoder as the full-name
+labels. It keeps at most three complete characters and removes trailing characters
+until the real font measurement fits the 32-pixel icon label. Examples: 学外语 ->
+学外, 其他类 -> 其他, 冒险类 -> 冒险; ordinary ASCII names retain up to three letters.
+This changes display labels only and does not rename files or directories.
+
+Validation: tests/check_icon_labels.py compiles the actual production constructor
+and StringUtil.cpp in a host harness. Measurements use the shipped Chinese font's
+glyph widths and spacing. Twelve cases covering Chinese, mixed text, ASCII, short,
+empty and null names passed, all within 32 pixels. The NDS was rebuilt successfully.
+The host harness does not test the DS graphics hardware; grid appearance still
+requires console confirmation. The previously working list layout is unchanged.
+
+Deployment remains a single replacement of TF root _picoboot.nds. The previous
+Chinese build is retained under ../rollback-chinese-v1/_picoboot.nds.
